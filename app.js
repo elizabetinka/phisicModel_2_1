@@ -5,8 +5,8 @@ let k = 0.5;
 let beta = 0.01;
 let fi1 = 3*Math.PI/12;
 let fi2 = 2*Math.PI/12;
-let A1 = 10*Math.PI/12;
-let A2 = 6*Math.PI/12;
+let A1=fi1+fi2;
+let A2=fi2-fi1;
 let g = 9.8
 
 
