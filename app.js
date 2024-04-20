@@ -69,30 +69,30 @@ function getV2(t,frec1,frec2,fi1,fi2,A1,A2,beta){
     return ans;
 }
 
-function getFI12(t,frec1,frec2,fi1,fi2,A1,A2,beta){
-    let ans = 0.5*(fi1*Math.exp(-beta*t)*Math.cos(frec1*t));
-    ans += 0.5*(fi2*Math.exp(-beta*t)*Math.cos(frec2*t));
+function getFI12(t,frec1,frec2,A1,A2,beta){
+    let ans = 0.5*(A1*Math.exp(-beta*t)*Math.cos(frec1*t));
+    ans += -0.5*(A2*Math.exp(-beta*t)*Math.cos(frec2*t));
     return ans;
 }
-function getFI22(t,frec1,frec2,fi1,fi2,A1,A2,beta){
-    let ans = 0.5*(fi1*Math.exp(-beta*t)*Math.cos(frec1*t));
-    ans -= 0.5*(fi2*Math.exp(-beta*t)*Math.cos(frec2*t));
-    return ans;
-}
-
-function getV12(t,frec1,frec2,fi1,fi2,A1,A2,beta){
-    let ans = -0.5*beta*fi1*Math.exp(-beta*t)*Math.cos(frec1*t);
-    ans += -0.5*fi1*frec1*Math.exp(-beta*t)*Math.sin(frec1*t);
-    ans += -0.5*beta*fi2*Math.exp(-beta*t)*Math.cos(frec2*t);
-    ans += -0.5*fi2*frec2*Math.exp(-beta*t)*Math.sin(frec2*t);
+function getFI22(t,frec1,frec2,A1,A2,beta){
+    let ans = 0.5*(A1*Math.exp(-beta*t)*Math.cos(frec1*t));
+    ans += 0.5*(A2*Math.exp(-beta*t)*Math.cos(frec2*t));
     return ans;
 }
 
-function getV22(t,frec1,frec2,fi1,fi2,A1,A2,beta){
-    let ans = -0.5*beta*fi1*Math.exp(-beta*t)*Math.cos(frec1*t);
-    ans += -0.5*fi1*frec1*Math.exp(-beta*t)*Math.sin(frec1*t);
-    ans += 0.5*beta*fi2*Math.exp(-beta*t)*Math.cos(frec2*t);
-    ans += 0.5*fi2*frec2*Math.exp(-beta*t)*Math.sin(frec2*t);
+function getV12(t,frec1,frec2,A1,A2,beta){
+    let ans = -0.5*beta*A1*Math.exp(-beta*t)*Math.cos(frec1*t);
+    ans += -0.5*A1*frec1*Math.exp(-beta*t)*Math.sin(frec1*t);
+    ans += 0.5*beta*A2*Math.exp(-beta*t)*Math.cos(frec2*t);
+    ans += 0.5*A2*frec2*Math.exp(-beta*t)*Math.sin(frec2*t);
+    return ans;
+}
+
+function getV22(t,frec1,frec2,A1,A2,beta){
+    let ans = -0.5*beta*A1*Math.exp(-beta*t)*Math.cos(frec1*t);
+    ans += -0.5*A1*frec1*Math.exp(-beta*t)*Math.sin(frec1*t);
+    ans += -0.5*beta*A2*Math.exp(-beta*t)*Math.cos(frec2*t);
+    ans += -0.5*A2*frec2*Math.exp(-beta*t)*Math.sin(frec2*t);
     return ans;
 }
 
@@ -110,36 +110,40 @@ function showMessage(L,L_1,k,m,beta,fi1,fi2,A1,A2) {
     inputFrec2.innerHTML = ("Нормальная частота Ω2:  "+frec2).substring(0,35);;
     
     let T = 2*Math.PI/(frec2-frec1);
+    A1=fi1+fi2;
+    A2=fi2-fi1;
     console.log("T: ", T );
     //console.log("b: ", b, " w0: ",w0, "w: ", w , "w^2: ", w_2);
-    for (let i =0; i<(T*2); i +=0.1){
+    for (let i =0; i<(T*2); i +=1){
         massx.push(i)
-        massyFi1.push(getFI12(i,frec1,frec2,fi1,fi2,A1,A2,beta));
-        massyFi2.push(getFI22(i,frec1,frec2,fi1,fi2,A1,A2,beta));
-        massyV1.push(getV12(i,frec1,frec2,fi1,fi2,A1,A2,beta))
-        massyV2.push(getV22(i,frec1,frec2,fi1,fi2,A1,A2,beta))
+        massyFi1.push(getFI12(i,frec1,frec2,A1,A2,beta));
+        massyFi2.push(getFI22(i,frec1,frec2,A1,A2,beta));
+        massyV1.push(getV12(i,frec1,frec2,A1,A2,beta))
+        massyV2.push(getV22(i,frec1,frec2,A1,A2,beta))
         //console.log("i: ", i, " q: ",q, "I: ", I, " U: ",U );
     }
 
     var result ={
         x: massx,
         y: massyFi1,
-        mode:'lines', line: {color: "#04BBEC"}
+        mode:'lines', line: {color: "#04baecdf"}
     };
     var result2 ={
         x: massx,
         y: massyFi2,
-        mode: 'lines', line: {color: "#FF82F4"}
+        mode: 'lines', line: {color: "#ff80f4b8"}
     };
     var result3 ={
         x: massx,
         y: massyV1,
-        mode: 'lines', line: {color: "#04BBEC"}
+        mode:'lines', line: {color: "#04baecdf"}
+        //mode: 'lines', line: {color: "#04BBEC"}
     };
     var result4 ={
         x: massx,
         y: massyV2,
-        mode: 'lines', line: {color: "#FF82F4"}
+        mode: 'lines', line: {color: "#ff80f4b8"}
+        //mode: 'lines', line: {color: "#FF82F4"}
     };
     var baseLayout = {
         title: 'Зависимость угла от времени',
@@ -201,7 +205,7 @@ resultButton.onclick = function(){
     k = k_text.value;
     beta = beta_text.value;
     fi1 = fi1_text.value*Math.PI/12;
-    fi2 = fi1_text.value*Math.PI/12;
+    fi2 = fi2_text.value*Math.PI/12;
     A1 = fi1_text.value*Math.PI/12;
     A2 = fi1_text.value*Math.PI/12;
     if (L < 0 || L_1<0 || m < 0){
